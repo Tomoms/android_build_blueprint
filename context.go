@@ -75,6 +75,8 @@ type Context struct {
 	// Used for metrics-related event logging.
 	EventHandler *metrics.EventHandler
 
+	BeforePrepareBuildActionsHook func() error
+
 	moduleFactories     map[string]ModuleFactory
 	nameInterface       NameInterface
 	moduleGroups        []*moduleGroup
@@ -4155,6 +4157,10 @@ func (c *Context) BeginEvent(name string) {
 
 func (c *Context) EndEvent(name string) {
 	c.EventHandler.End(name)
+}
+
+func (c *Context) SetBeforePrepareBuildActionsHook(hookFn func() error) {
+	c.BeforePrepareBuildActionsHook = hookFn
 }
 
 func (c *Context) writeLocalBuildActions(nw *ninjaWriter,
